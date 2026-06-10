@@ -156,12 +156,6 @@ export default function App() {
           />
           {/* ================= pagess ================= */}
           <Route
-  path="/service/:slug"
-  element={
-    <ServiceDetails />
-  }
-/>
-          <Route
             path="/dashboard/teacher/analytics"
             element={
               <ProtectedRoute allowedRoles={["teacher"]}>

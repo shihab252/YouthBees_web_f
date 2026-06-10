@@ -10,7 +10,6 @@ import userRoutes from "./routes/user.router.js";
 import courseRoutes from "./routes/course.routes.js";
 import teacherRoutes from "./routes/teacher.routes.js";
 import serviceRoutes from "./routes/service.routes.js";
-import partnerRoutes from "./routes/partner.routes.js";
 
 
 
@@ -26,7 +25,6 @@ app.use("/api/user", userRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/teacher", teacherRoutes);
 app.use("/api/service", serviceRoutes);
-app.use("/api/partner", partnerRoutes);
 
 app.get("/", (req, res) => res.send("YouthBees API running"));
 

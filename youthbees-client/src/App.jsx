@@ -36,7 +36,6 @@ import CourseDetails from "./pages/CourseDetails";
 import UpdateCourse from "./pages/UpdateCourse";
 import Courses from "./pages/Courses";
 import Services from "./pages/Services";
-import ServiceDetails from "./pages/ServiceDetails";
 
 
 /* --- Services --- */

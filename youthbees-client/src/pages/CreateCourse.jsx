@@ -116,7 +116,7 @@ export default function CreateCourse() {
       let imageUrl = "";
       if (image) imageUrl = await uploadImage();
 
-      await axios.post(`${API_BASE_URL}/course/create`, 
+      await axios.post(`${API_BASE_URL}/api/course/create`, 
         { ...form, banner: imageUrl },
         { headers: { Authorization: `Bearer ${token}` } }
       );

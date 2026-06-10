@@ -10,13 +10,16 @@ import {
   FaHeart, FaPlay, FaCalendarCheck, FaSearch, FaChalkboardTeacher, FaArrowLeft
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import API_BASE_URL from "../config/api";
+
 
 // ✅ ASSET IMPORTS
 import teamImg from "../assets/about/team.jpg";
 import eventImg from "../assets/about/event.jpg";
 import founderImg from "../assets/about/founder.jpg";
 import workshopImg from "../assets/about/workshop.jpg";
-import pythonImg from "../assets/programs/python-fundamentals.jpg"; 
+import pythonImg from "../assets/programs/python-fundamentals.jpg";
 import careerGroomingImg from "../assets/programs/career-grooming.jpg";
 import cvMasteryImg from "../assets/programs/cv-mastery.jpg";
 
@@ -37,6 +40,7 @@ const feedbacks = [
   { name: "Maliha Khan", role: "Freelancer", text: "Professionalism and quality at an affordable price. Highly recommended.", rating: 5 },
   { name: "Tanvir Rizvi", role: "Graduate", text: "Their LinkedIn optimization helped me get noticed by global recruiters.", rating: 5 },
 ];
+
 
 const programsData = [
   {
@@ -72,47 +76,78 @@ const programsData = [
 ];
 
 export default function Home() {
+  const [services, setServices] =
+  useState([]);
   const { scrollYProgress } = useScroll();
   const textParallax = useTransform(scrollYProgress, [0, 0.5], [0, -200]);
-  
+
   // Hub States
-  const [hubMode, setHubMode] = useState("list"); 
+  const [hubMode, setHubMode] = useState("list");
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [courseType, setCourseType] = useState("training");
 
   const filteredPrograms = programsData.filter((p) => p.source === courseType);
 
-  const handleViewProgram = (program) => {
-    setSelectedProgram(program);
-    setHubMode("details");
-  };
+  useEffect(() => {
+  const fetchServices =
+    async () => {
+      try {
+        const res =
+          await axios.get(
+            `${API_BASE_URL}/api/service`
+          );
+
+        setServices(
+          res.data
+        );
+
+      } catch (err) {
+        console.error(
+          err
+        );
+      }
+    };
+
+  fetchServices();
+}, []);
+const handleViewProgram = (
+  program
+) => {
+  setSelectedProgram(
+    program
+  );
+
+  setHubMode(
+    "details"
+  );
+};
 
   return (
     <div className="bg-[#FFF9F5] text-slate-900 selection:bg-orange-300 overflow-x-hidden">
-      
-    {/* 1. HERO SECTION */}
+
+      {/* 1. HERO SECTION */}
       <section className="relative min-h-[90vh] lg:min-h-screen flex items-center pt-28 pb-16 lg:pt-20 lg:pb-20 px-6 overflow-hidden text-left bg-[#FDF8F4]">
         {/* Subtle Background Glow */}
         <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] lg:w-[800px] lg:h-[800px] bg-orange-100/30 rounded-full blur-[120px] pointer-events-none" />
-        
+
         <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10 w-full">
-          
+
           {/* LEFT CONTENT */}
           <motion.div className="lg:col-span-6 text-left" initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-100 shadow-sm mb-8">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
               <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">Innovation Hub Est. 2021</span>
             </div>
-            
+
             <h1 className="text-6xl md:text-7xl lg:text-[7.2rem] font-black leading-[0.9] lg:leading-[0.85] tracking-tighter mb-8 text-[#0F172A] uppercase">
               EMPOWER <br />
               <span className="text-[#FF8C1A] italic">GROWTH.</span>
             </h1>
-            
+
             <p className="text-base lg:text-lg text-slate-500 max-w-lg border-l-[3px] border-[#FF8C1A] pl-6 mb-12 font-medium leading-relaxed">
               Bangladesh's leading career ecosystem. Bridging the gap between academic theory and industry reality.
             </p>
-            
+
             <div className="flex flex-wrap gap-4 justify-start">
               <button className="px-10 py-5 bg-[#0F172A] text-white font-black rounded-2xl shadow-xl hover:bg-[#FF8C1A] transition-all flex items-center justify-center gap-3 uppercase text-xs tracking-widest group">
                 Get Started <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
@@ -122,11 +157,11 @@ export default function Home() {
 
           {/* RIGHT CONTENT: Styled Overlapping Image Frames */}
           <div className="lg:col-span-6 relative h-[500px] lg:h-[650px] hidden md:flex items-center justify-center">
-            
+
             {/* Top Back Image (Team) */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, x: 20 }} 
-              animate={{ opacity: 1, scale: 1, x: 0 }} 
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, x: 20 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               className="absolute top-10 right-0 w-[75%] h-[60%] rounded-[3.5rem] overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.12)] z-10 border-[12px] border-white"
             >
@@ -134,9 +169,9 @@ export default function Home() {
             </motion.div>
 
             {/* Bottom Front Image (Workshop) */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.8, x: -30, y: 30 }} 
-              animate={{ opacity: 1, scale: 1, x: 0, y: 0 }} 
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, x: -30, y: 30 }}
+              animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
               className="absolute bottom-10 left-0 w-[65%] h-[45%] rounded-[3rem] overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.15)] z-20 border-[12px] border-white"
             >
@@ -149,10 +184,10 @@ export default function Home() {
         </div>
       </section>
 
-     {/* 2. VIDEO & WHY CHOOSE SECTION */}
+      {/* 2. VIDEO & WHY CHOOSE SECTION */}
       <section id="video-intro" className="py-24 lg:py-32 px-6 bg-white border-y border-orange-100">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 lg:gap-20 items-start text-left">
-          
+
           {/* Left Side: Video Player */}
           <div className="lg:col-span-5 sticky top-32">
             <div className="relative group rounded-[2.5rem] lg:rounded-[3.5rem] overflow-hidden shadow-2xl aspect-video bg-slate-900 border-4 lg:border-8 border-orange-50 transition-transform hover:scale-[1.02] duration-500">
@@ -180,37 +215,37 @@ export default function Home() {
             <h2 className="text-5xl lg:text-7xl font-black tracking-tighter uppercase mb-12 leading-none text-slate-900">
               Why <br /><span className="text-orange-500 italic">YouthBees?</span>
             </h2>
-            
+
             <div className="grid sm:grid-cols-2 gap-x-10 gap-y-12">
-              <WhyFeature 
-                icon={<FaRocket />} 
-                title="Practical Growth" 
-                desc="Over theoretical noise. We focus on real skills and actions that work in the real world." 
+              <WhyFeature
+                icon={<FaRocket />}
+                title="Practical Growth"
+                desc="Over theoretical noise. We focus on real skills and actions that work in the real world."
               />
-              <WhyFeature 
-                icon={<FaUsers />} 
-                title="Inclusive Guidance" 
-                desc="For every starting point. No matter where you begin, you get clear, supportive guidance." 
+              <WhyFeature
+                icon={<FaUsers />}
+                title="Inclusive Guidance"
+                desc="For every starting point. No matter where you begin, you get clear, supportive guidance."
               />
-              <WhyFeature 
-                icon={<FaHandshake />} 
-                title="Community Driven" 
-                desc="Progress through unity. We grow together by sharing knowledge, support, and opportunities." 
+              <WhyFeature
+                icon={<FaHandshake />}
+                title="Community Driven"
+                desc="Progress through unity. We grow together by sharing knowledge, support, and opportunities."
               />
-              <WhyFeature 
-                icon={<FaLightbulb />} 
-                title="Future Ready" 
-                desc="Continuous innovation. We evolve constantly to stay relevant, modern, and future-ready." 
+              <WhyFeature
+                icon={<FaLightbulb />}
+                title="Future Ready"
+                desc="Continuous innovation. We evolve constantly to stay relevant, modern, and future-ready."
               />
-              <WhyFeature 
-                icon={<FaCheckCircle />} 
-                title="Elite Mentorship" 
-                desc="Direct access to industry leaders, founders, and CXOs who have walked the path." 
+              <WhyFeature
+                icon={<FaCheckCircle />}
+                title="Elite Mentorship"
+                desc="Direct access to industry leaders, founders, and CXOs who have walked the path."
               />
-              <WhyFeature 
-                icon={<FaAward />} 
-                title="Verified Credentials" 
-                desc="Global standard certifications recognized by our growing network of industry partners." 
+              <WhyFeature
+                icon={<FaAward />}
+                title="Verified Credentials"
+                desc="Global standard certifications recognized by our growing network of industry partners."
               />
             </div>
           </div>
@@ -232,14 +267,14 @@ export default function Home() {
         </div>
       </section>
 
-     {/* 4. SERVICES BENTO - REDESIGNED */}
+      {/* 4. SERVICES BENTO - REDESIGNED */}
       <section className="py-24 lg:py-40 px-6 bg-[#FDF8F4] overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          
+
           {/* Header Area with Reference Styling */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-20 gap-10">
-            <motion.div 
-              initial={{ opacity: 0, x: -30 }} 
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               className="text-left"
@@ -256,43 +291,36 @@ export default function Home() {
 
           {/* Bento Grid with Overlapping Frame Logic */}
           <div className="grid md:grid-cols-4 md:grid-rows-2 gap-6 h-auto lg:h-[700px]">
-             
-             {/* CV Revamp - Large Feature Card */}
-             <BentoCard 
-               icon={<FaFileAlt />} 
-               title="CV Revamp" 
-               desc="ATS-optimized resumes crafted for elite corporate roles." 
-               link="/services/cv-writing"
-               className="md:col-span-2 md:row-span-2 bg-[#0F172A] text-white" 
-               isPrimary
-             />
 
-             {/* Academic Support - Floating Style */}
-             <BentoCard 
-               icon={<FaUserGraduate />} 
-               title="Academic Support" 
-               desc="Scholarly success suites and SOP guidance." 
-               link="/services/academic-support"
-               className="md:col-span-2 bg-white text-[#0F172A] border-[8px] border-white shadow-xl" 
-             />
+            {/* CV Revamp - Large Feature Card */}
+            {services
+              .slice(0, 4)
+              .map((service, index) => (
+                <BentoCard
+                  key={service._id}
+                  title={service.title}
+                  desc={
+                    service.shortDescription
+                  }
+                  link={`/service/${service.slug}`}
+                  className={
+                    index === 0
+                      ? "md:col-span-2 md:row-span-2 bg-[#0F172A] text-white"
+                      : "bg-white text-[#0F172A] border-[8px] border-white shadow-xl"
+                  }
+                  isPrimary={index === 0}
+                />
+              ))}
+          </div>
+          <div className="text-center mt-12">
 
-             {/* LinkedIn Sync */}
-             <BentoCard 
-               icon={<FaLinkedin />} 
-               title="LinkedIn Sync" 
-               desc="Authority-driven profile optimization." 
-               link="/services/linkedin"
-               className="bg-[#FF8C1A] text-white" 
-             />
+            <Link
+              to="/services"
+              className="px-10 py-5 bg-[#FF8C1A] text-white font-black rounded-2xl"
+            >
+              View All Services
+            </Link>
 
-             {/* Web Presence */}
-             <BentoCard 
-               icon={<FaGlobe />} 
-               title="Web Presence" 
-               desc="Premium digital portfolios." 
-               link="/services/portfolio"
-               className="bg-white text-[#0F172A] border-[8px] border-white shadow-xl" 
-             />
           </div>
         </div>
       </section>
@@ -306,7 +334,7 @@ export default function Home() {
                 <div className="text-center mb-16">
                   <span className="text-orange-500 font-black uppercase tracking-widest text-[10px] lg:text-xs mb-4 block">Educational Hub</span>
                   <h2 className="text-5xl lg:text-8xl font-black tracking-tighter leading-none mb-10 uppercase italic">Master Skills.</h2>
-                  
+
                   <div className="bg-white/5 p-1.5 rounded-2xl border border-white/10 flex gap-2 w-fit mx-auto mb-20">
                     <button onClick={() => setCourseType("training")} className={`px-8 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${courseType === 'training' ? 'bg-orange-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}>Training Programs</button>
                     <button onClick={() => setCourseType("partner")} className={`px-8 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${courseType === 'partner' ? 'bg-orange-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}>Partner Programs</button>
@@ -346,12 +374,12 @@ export default function Home() {
                       <li className="flex items-center gap-3 font-bold text-slate-700 uppercase text-xs tracking-wide"><FaUsers className="text-orange-500" /> Career Growth & Mentorship</li>
                     </ul>
                     <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100 flex flex-col justify-center">
-                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 text-left">Level & Duration</p>
-                       <div className="flex items-center gap-4 text-left">
-                          <span className="text-2xl font-black text-slate-900 uppercase">{selectedProgram?.level}</span>
-                          <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
-                          <span className="text-2xl font-black text-slate-900">{selectedProgram?.duration}</span>
-                       </div>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 text-left">Level & Duration</p>
+                      <div className="flex items-center gap-4 text-left">
+                        <span className="text-2xl font-black text-slate-900 uppercase">{selectedProgram?.level}</span>
+                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+                        <span className="text-2xl font-black text-slate-900">{selectedProgram?.duration}</span>
+                      </div>
                     </div>
                   </div>
                   <button className="w-full md:w-auto px-12 py-6 rounded-2xl bg-slate-900 text-white font-black hover:bg-orange-500 transition-all shadow-xl uppercase text-sm tracking-widest flex items-center justify-center gap-3">Apply Now <FaArrowRight /></button>
@@ -369,14 +397,14 @@ export default function Home() {
           <h2 className="text-5xl lg:text-8xl font-black tracking-tighter uppercase leading-none text-slate-900 text-left">Mentor <br /> <span className="text-orange-500 italic">Visions.</span></h2>
         </div>
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 text-left">
-            <MentorQuote name="Mahib Sadman" role="Founder" text="Innovation is not a skill, it is a lifestyle. We nurture that mindset here." img={founderImg} />
-            <MentorQuote name="Sakib Hasan" role="COO" text="Strategic efficiency is the key to corporate survival." img={teamImg} />
+          <MentorQuote name="Mahib Sadman" role="Founder" text="Innovation is not a skill, it is a lifestyle. We nurture that mindset here." img={founderImg} />
+          <MentorQuote name="Sakib Hasan" role="COO" text="Strategic efficiency is the key to corporate survival." img={teamImg} />
         </div>
       </section>
       <section className="py-20 lg:py-32 px-6 bg-white border-y border-orange-100">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-20 text-left">
           <div>
-            <h3 className="text-3xl lg:text-4xl font-black uppercase mb-8 flex items-center gap-3 text-left"><FaRobot className="text-orange-500"/> AI Tool Box</h3>
+            <h3 className="text-3xl lg:text-4xl font-black uppercase mb-8 flex items-center gap-3 text-left"><FaRobot className="text-orange-500" /> AI Tool Box</h3>
             <div className="grid gap-4">
               <ToolCard name="ChatGPT" desc="Content & Strategy" link="https://chat.openai.com" />
               <ToolCard name="Claude AI" desc="Advanced Reasoning" link="https://claude.ai" />
@@ -384,7 +412,7 @@ export default function Home() {
             </div>
           </div>
           <div>
-            <h3 className="text-3xl lg:text-4xl font-black uppercase mb-8 flex items-center gap-3 text-left"><FaNewspaper className="text-orange-500"/> Latest Articles</h3>
+            <h3 className="text-3xl lg:text-4xl font-black uppercase mb-8 flex items-center gap-3 text-left"><FaNewspaper className="text-orange-500" /> Latest Articles</h3>
             <div className="space-y-4 lg:space-y-6">
               <BlogRow title="The Future of Remote Work in BD" date="Jan 12, 2026" />
               <BlogRow title="Top 10 Resume Mistakes to Avoid" date="Jan 08, 2026" />
@@ -418,18 +446,18 @@ export default function Home() {
           <motion.div className="flex gap-8 whitespace-nowrap" animate={{ x: ["0%", "-50%"] }} transition={{ ease: "linear", duration: 35, repeat: Infinity }}>
             {[...feedbacks, ...feedbacks].map((f, i) => (
               <div key={i} className="inline-block w-[350px] p-10 rounded-[3rem] bg-orange-50/30 border border-orange-100 relative group hover:bg-white hover:shadow-2xl whitespace-normal text-left">
-                 <FaQuoteLeft className="text-orange-500/20 text-5xl absolute top-8 left-8" />
-                 <p className="text-slate-600 font-medium italic leading-relaxed mb-10 relative z-10 text-left">{f.text}</p>
-                 <div className="flex items-center gap-4 mt-auto text-left">
-                    <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white text-xl"><FaUserCircle /></div>
-                    <div className="text-left">
-                       <p className="text-sm font-black text-slate-900 uppercase tracking-tight leading-none mb-1 text-left">{f.name}</p>
-                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-left">{f.role}</p>
-                    </div>
-                 </div>
-                 <div className="absolute bottom-10 right-10 flex gap-1">
-                    {[...Array(f.rating)].map((_, i) => <FaStar key={i} className="text-orange-500 text-[10px]" />)}
-                 </div>
+                <FaQuoteLeft className="text-orange-500/20 text-5xl absolute top-8 left-8" />
+                <p className="text-slate-600 font-medium italic leading-relaxed mb-10 relative z-10 text-left">{f.text}</p>
+                <div className="flex items-center gap-4 mt-auto text-left">
+                  <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white text-xl"><FaUserCircle /></div>
+                  <div className="text-left">
+                    <p className="text-sm font-black text-slate-900 uppercase tracking-tight leading-none mb-1 text-left">{f.name}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-left">{f.role}</p>
+                  </div>
+                </div>
+                <div className="absolute bottom-10 right-10 flex gap-1">
+                  {[...Array(f.rating)].map((_, i) => <FaStar key={i} className="text-orange-500 text-[10px]" />)}
+                </div>
               </div>
             ))}
           </motion.div>
@@ -512,12 +540,12 @@ function WhyFeature({ icon, title, desc }) {
 function PathwayCard({ title, desc, icon, link, color = "bg-white text-slate-900" }) {
   return (
     <Link to={link} className={`${color} p-8 lg:p-10 rounded-[2rem] lg:rounded-[3rem] shadow-xl border border-orange-50 group hover:-translate-y-2 transition-all flex flex-col min-h-[300px] lg:min-h-[350px] text-left`}>
-       <div className="text-4xl lg:text-5xl mb-6 text-orange-500 group-hover:scale-110 transition-transform">{icon}</div>
-       <div className="mt-auto text-left">
-          <h4 className="text-2xl lg:text-3xl font-black uppercase tracking-tighter leading-none mb-4 text-left">{title}</h4>
-          <p className="text-xs lg:text-sm font-bold opacity-70 mb-8 text-left">{desc}</p>
-          <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl lg:rounded-2xl bg-slate-900 text-white flex items-center justify-center group-hover:bg-orange-500 transition-colors"><FaArrowRight /></div>
-       </div>
+      <div className="text-4xl lg:text-5xl mb-6 text-orange-500 group-hover:scale-110 transition-transform">{icon}</div>
+      <div className="mt-auto text-left">
+        <h4 className="text-2xl lg:text-3xl font-black uppercase tracking-tighter leading-none mb-4 text-left">{title}</h4>
+        <p className="text-xs lg:text-sm font-bold opacity-70 mb-8 text-left">{desc}</p>
+        <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl lg:rounded-2xl bg-slate-900 text-white flex items-center justify-center group-hover:bg-orange-500 transition-colors"><FaArrowRight /></div>
+      </div>
     </Link>
   );
 }
@@ -529,7 +557,7 @@ function BentoCard({ icon, title, desc, link, className, isPrimary }) {
         <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-8 shadow-sm transition-transform group-hover:rotate-6 ${isPrimary ? 'bg-[#FF8C1A] text-white' : 'bg-[#FDF8F4] text-[#FF8C1A]'}`}>
           {icon}
         </div>
-        
+
         <div className="text-left">
           <h4 className={`text-2xl lg:text-3xl font-black uppercase tracking-tighter mb-4 ${isPrimary ? 'text-white' : 'text-[#0F172A]'}`}>
             {title}
@@ -542,7 +570,7 @@ function BentoCard({ icon, title, desc, link, className, isPrimary }) {
           </div>
         </div>
       </div>
-      
+
       {/* Visual background element for primary card */}
       {isPrimary && (
         <div className="absolute -bottom-10 -right-10 text-[12rem] font-black text-white/5 select-none pointer-events-none italic">

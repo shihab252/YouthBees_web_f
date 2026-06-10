@@ -22,7 +22,7 @@ export default function MyCourses() {
         const token = await auth.currentUser.getIdToken();
 
         const res = await axios.get(
-          `${API_BASE_URL}/course/my-courses`,
+          `${API_BASE_URL}/api/course/my-courses`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

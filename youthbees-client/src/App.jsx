@@ -35,6 +35,8 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import CourseDetails from "./pages/CourseDetails";
 import UpdateCourse from "./pages/UpdateCourse";
 import Courses from "./pages/Courses";
+import Services from "./pages/Services";
+import ServiceDetails from "./pages/ServiceDetails";
 
 
 /* --- Services --- */
@@ -51,6 +53,7 @@ import InternshipPathway from "./pages/services/InternshipPathway";
 import Profile from "./pages/Profile";
 import TeacherAnalytics from "./pages/TeacherAnalytics";
 import TeacherStudents from "./pages/TeacherStudents";
+import AdminServices from "./pages/services/AdminServices";
 
 export default function App() {
   return (
@@ -71,7 +74,7 @@ export default function App() {
           <Route path="/training-programs" element={<TrainingPrograms />} />
           <Route path="/partner-programs" element={<PartnerPrograms />} />
           <Route path="/team" element={<Team />} />
-
+          <Route path="/services" element={<Services />} />
           {/* ================= AUTH ROUTES ================= */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -122,8 +125,22 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/dashboard/teacher/create-course" element={<CreateCourse />} />
-          <Route path="/dashboard/teacher/my-courses" element={<MyCourses />} />
+          <Route
+            path="/dashboard/teacher/create-course"
+            element={
+              <ProtectedRoute allowedRoles={["teacher"]}>
+                <CreateCourse />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/teacher/my-courses"
+            element={
+              <ProtectedRoute allowedRoles={["teacher"]}>
+                <MyCourses />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/course/:id"
@@ -132,11 +149,35 @@ export default function App() {
 
           <Route
             path="/dashboard/teacher/update-course/:id"
-            element={<UpdateCourse />}
+            element={
+              <ProtectedRoute allowedRoles={["teacher"]}>
+                <UpdateCourse />
+              </ProtectedRoute>
+            }
           />
           {/* ================= pagess ================= */}
-          <Route path="/dashboard/teacher/analytics" element={<TeacherAnalytics />} />
-          <Route path="/dashboard/teacher/students" element={<TeacherStudents />} />
+          <Route
+  path="/service/:slug"
+  element={
+    <ServiceDetails />
+  }
+/>
+          <Route
+            path="/dashboard/teacher/analytics"
+            element={
+              <ProtectedRoute allowedRoles={["teacher"]}>
+                <TeacherAnalytics />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/teacher/students"
+            element={
+              <ProtectedRoute allowedRoles={["teacher"]}>
+                <TeacherStudents />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/courses"
             element={<Courses />}
@@ -155,6 +196,11 @@ export default function App() {
           <Route path="/services/corporate-training" element={<CorporateTraining />} />
           <Route path="/services/marketing-support" element={<MarketingSupport />} />
           <Route path="/services/internship-pathway" element={<InternshipPathway />} />
+          <Route path="/dashboard/admin/services" element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminServices />
+            </ProtectedRoute>
+          } />
 
           {/* ================= FALLBACK ================= */}
           <Route path="*" element={<Navigate to="/" />} />

@@ -68,30 +68,36 @@ export const getAllUsers = async (
     const users = await User.find();
 
     const grouped = {
-      pendingTeachers: users.filter(
-        (u) =>
-          u.role === "teacher" &&
-          u.status === "pending"
-      ),
+  pendingTeachers: users.filter(
+    (u) =>
+      u.role === "teacher" &&
+      u.status === "pending"
+  ),
 
-      activeTeachers: users.filter(
-        (u) =>
-          u.role === "teacher" &&
-          u.status === "active"
-      ),
+  activeTeachers: users.filter(
+    (u) =>
+      u.role === "teacher" &&
+      u.status === "active"
+  ),
 
-      students: users.filter(
-        (u) => u.role === "student"
-      ),
+  suspendedTeachers: users.filter(
+    (u) =>
+      u.role === "teacher" &&
+      u.status === "suspended"
+  ),
 
-      partners: users.filter(
-        (u) => u.role === "partner"
-      ),
+  students: users.filter(
+    (u) => u.role === "student"
+  ),
 
-      affiliates: users.filter(
-        (u) => u.role === "affiliate"
-      ),
-    };
+  partners: users.filter(
+    (u) => u.role === "partner"
+  ),
+
+  affiliates: users.filter(
+    (u) => u.role === "affiliate"
+  ),
+};
 
     res.json(grouped);
   } catch (err) {

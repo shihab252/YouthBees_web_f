@@ -2,12 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { auth } from "../../firebase";
 import API_BASE_URL from "../../config/api";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
   const [data, setData] = useState({});
   const [activeTab, setActiveTab] = useState("pendingTeachers");
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   const fetchUsers = async (user) => {
     try {
@@ -81,10 +83,52 @@ export default function AdminDashboard() {
 
   const tabs = [
     { key: "pendingTeachers", label: "Pending", color: "border-yellow-500" },
+
     { key: "activeTeachers", label: "Teachers", color: "border-purple-500" },
+
+    { key: "suspendedTeachers", label: "Suspended", color: "border-red-500" },
+
     { key: "students", label: "Students", color: "border-green-500" },
+
     { key: "partners", label: "Partners", color: "border-blue-500" },
+
     { key: "affiliates", label: "Affiliates", color: "border-pink-500" },
+  ];
+  const menuItems = [
+    {
+      label: "Dashboard",
+      path: "/dashboard/admin",
+    },
+
+    {
+      label: "Users",
+      path: "/dashboard/admin",
+    },
+
+    {
+      label: "Courses",
+      path: "/dashboard/admin/courses",
+    },
+
+    {
+      label: "Services",
+      path: "/dashboard/admin/services",
+    },
+
+    {
+      label: "Events",
+      path: "/dashboard/admin/events",
+    },
+
+    {
+      label: "Analytics",
+      path: "/dashboard/admin/analytics",
+    },
+
+    {
+      label: "Settings",
+      path: "/dashboard/admin/settings",
+    },
   ];
 
   const users = data[activeTab] || [];
@@ -112,13 +156,16 @@ export default function AdminDashboard() {
         </div>
 
         <nav className="flex-1 px-6 space-y-2">
-          {["Dashboard", "Users", "Teachers", "Courses", "Events", "Analytics", "Settings"].map((item) => (
+          {menuItems.map((item) => (
             <button
-              key={item}
-              className={`w-full flex items-center px-6 py-4 rounded-2xl text-sm font-bold transition-all duration-300 ${item === "Users" ? "bg-white/10 text-yellow-400 shadow-inner" : "text-slate-400 hover:text-white hover:bg-white/5"
+              key={item.label}
+              onClick={() => navigate(item.path)}
+              className={`w-full flex items-center px-6 py-4 rounded-2xl text-sm font-bold transition-all duration-300 ${item.label === "Users"
+                ? "bg-white/10 text-yellow-400 shadow-inner"
+                : "text-slate-400 hover:text-white hover:bg-white/5"
                 }`}
             >
-              {item}
+              {item.label}
             </button>
           ))}
         </nav>
@@ -149,12 +196,61 @@ export default function AdminDashboard() {
         </header>
 
         {/* 3. Dark Metric Cards with Sparklines (CSS Gradients) */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-6">
           <MetricCard title="Pending" count={data.pendingTeachers?.length} color="yellow" />
           <MetricCard title="Teachers" count={data.activeTeachers?.length} color="purple" />
+          <MetricCard title="Suspended" count={data.suspendedTeachers?.length} color="red" />
           <MetricCard title="Students" count={data.students?.length} color="green" />
           <MetricCard title="Partners" count={data.partners?.length} color="blue" />
           <MetricCard title="Affiliates" count={data.affiliates?.length} color="pink" />
+          <MetricCard title="Services" count={data.services?.length || 0} color="blue" />
+        </div>
+        <div className="grid md:grid-cols-4 gap-4 mb-10">
+
+          <button
+            onClick={() =>
+              navigate(
+                "/dashboard/admin/services"
+              )
+            }
+            className="bg-white p-5 rounded-2xl shadow font-black"
+          >
+            Manage Services
+          </button>
+
+          <button
+            onClick={() =>
+              navigate(
+                "/dashboard/admin/courses"
+              )
+            }
+            className="bg-white p-5 rounded-2xl shadow font-black"
+          >
+            Manage Courses
+          </button>
+
+          <button
+            onClick={() =>
+              navigate(
+                "/dashboard/admin/events"
+              )
+            }
+            className="bg-white p-5 rounded-2xl shadow font-black"
+          >
+            Manage Events
+          </button>
+
+          <button
+            onClick={() =>
+              navigate(
+                "/dashboard/admin/analytics"
+              )
+            }
+            className="bg-white p-5 rounded-2xl shadow font-black"
+          >
+            Analytics
+          </button>
+
         </div>
 
         {/* 4. Table Section with Marble Effect */}
@@ -167,8 +263,8 @@ export default function AdminDashboard() {
                   key={t.key}
                   onClick={() => setActiveTab(t.key)}
                   className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === t.key
-                      ? "bg-slate-900 text-white shadow-lg"
-                      : "bg-slate-100 text-slate-400 hover:bg-slate-200"
+                    ? "bg-slate-900 text-white shadow-lg"
+                    : "bg-slate-100 text-slate-400 hover:bg-slate-200"
                     }`}
                 >
                   {t.label}
@@ -229,7 +325,15 @@ export default function AdminDashboard() {
                           {u.status === "suspended" ? (
 
                             <button
-                              onClick={() => unsuspendUser(u._id)}
+                              onClick={() => {
+                                if (
+                                  window.confirm(
+                                    "Unsuspend this user?"
+                                  )
+                                ) {
+                                  unsuspendUser(u._id);
+                                }
+                              }}
                               className="bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-lg shadow-emerald-500/20"
                             >
                               Unsuspend
@@ -238,14 +342,22 @@ export default function AdminDashboard() {
                           ) : (
 
                             <button
-                              onClick={() => suspendUser(u._id)}
+                              onClick={() => {
+                                if (
+                                  window.confirm(
+                                    "Suspend this user?"
+                                  )
+                                ) {
+                                  suspendUser(u._id);
+                                }
+                              }}
                               className="bg-white border border-slate-200 text-slate-400 px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-wider hover:bg-red-500 hover:text-white hover:border-red-500 transition-all"
                             >
                               Suspend
                             </button>
 
-                          )} 
-                           </div>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -266,6 +378,7 @@ function MetricCard({ title, count, color }) {
     green: "from-emerald-400 to-teal-600",
     blue: "from-sky-400 to-blue-600",
     pink: "from-rose-400 to-pink-600",
+    red: "from-red-400 to-red-600",
   };
 
   return (
